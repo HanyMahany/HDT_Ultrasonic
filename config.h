@@ -5,7 +5,7 @@
 #define ENABLE 1
 #define DISABLE 0
 
-#define SD_CARD_STATUS ENABLE
+#define SD_CARD_STATUS DISABLE
 #define CHIP_SELECT 53
 
 #define USER_ADMIN_NAME       "ADMIN"
@@ -26,7 +26,7 @@
  * 0 disable
  * 1 Enable
 */
-#define NODE_MCU_STATUS 1
+#define NODE_MCU_STATUS DISABLE
 #define DNS "41.165.125.1.30"
 #define CHANNEL 200
 #endif

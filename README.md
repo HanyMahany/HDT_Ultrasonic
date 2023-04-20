@@ -1,7 +1,7 @@
 # Ultrasonic_Mega
 
-Pin Mapping for Arduino Mega
-Note that all Voltage level in +5V
+## Pin Mapping for Arduino Mega
+### Note that all Voltage level in +5V
 
 | Arduino Mega Pin Number(Name)	| Target|
 |-------------------------------|-------|

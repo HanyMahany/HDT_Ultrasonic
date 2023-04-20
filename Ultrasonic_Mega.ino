@@ -192,8 +192,9 @@ char getChar (void) {
   }
 }
 /**************************  Tested  *******************/
-#if NODE_MCU_STATUS == 1
+
 void send2NodeData(void) {
+  #if NODE_MCU_STATUS == 1
   t = millis();
   Serial.println("(Debug)_@send2Node");
   String message  = "D " + String(CHANNEL) + String(" ") + String (CalculatedVolume);
@@ -229,8 +230,9 @@ void send2NodeData(void) {
   Serial3.println(message);
   Serial.println(message);
   delay(300);
-}
 #endif
+}
+
 
 /**************************  Tested  *******************/
 bool getUser (void) {
@@ -394,7 +396,7 @@ void getDistanceCM(void) {
   delayMicroseconds(20);
 
   digitalWrite(TRIG_PIN, LOW); // Send pin low again
-  float distance = pulseIn(ECHO_PIN, HIGH); // Read in times pulse
+  double distance = pulseIn(ECHO_PIN, HIGH); // Read in times pulse
 
   CalculatedHight = distance / 58; //Convert the pulse duration to distance
   //You can add other math functions to calibrate it well
@@ -403,8 +405,15 @@ void getDistanceCM(void) {
   lcd.setCursor(5, 1);
   lcd.print("Volume:");
   lcd.setCursor(5, 2);
-  lcd.print(CalculatedVolume);
+  lcd.print(CalculatedVolume,4);
   lcd.print(" m3");
+  
+  Serial.println("Height");
+  Serial.println(CalculatedHight,3);
+  Serial.println("shapeSectorArea");
+  Serial.println(shapeSectorArea,3);
+  Serial.println("shapeHight");
+  Serial.println(shapeHight,3);
   delay(500);
 }
 
