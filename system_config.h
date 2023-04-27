@@ -1,0 +1,25 @@
+
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+
+#define SD_CARD_STATUS ENABLE
+#define NODE_MCU_STATUS ENABLE
+#define MAX485_STATUS ENABLE
+#define ENTRY ENTRY_KEYPAD
+
+#define LCD_I2C_ADDRESS 0x27
+#define BLIND_LENGTH 25
+
+#define DEALY_WELCOME_MS  3000
+#define WAITING_PASS_TIME 5000
+
+#define USER_ADMIN_NAME       "ADMIN"
+#define USER_OPERATION_NAME   "OPERATOR"
+
+#define USER_ADMIN_PASS      "122333"
+#define USER_OPERATION_PASS  "123"
+
+
+#define DNS "41.165.125.1.30"
+#define CHANNEL 200
+#endif
