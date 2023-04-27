@@ -6,6 +6,9 @@
 #include <LiquidCrystal_I2C.h>
 //Keyboard Lib.
 #include <PS2Keyboard.h>
+//Keypad Lib.
+#include <Keypad.h>
+
 //EEPROM Lib.
 #include <EEPROM.h>
 
@@ -22,6 +25,7 @@
 #include "sdcard_interface.h"
 #include "parameters_interface.h"
 #include "max485_interface.h"
+#include "entry_interface.h"
 #include "app_level_interface.h"
 
 #include "global_variables.h"

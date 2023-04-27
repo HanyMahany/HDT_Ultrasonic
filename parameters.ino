@@ -21,7 +21,7 @@ bool param_getUser (void)
       lcd.print(key);
       indi++;
     }
-    else if (key == 0xD) {
+    else if (key == CLEAR_CHAR) {
       t = millis();
       indi = 0;
       //Some char inserted
@@ -129,7 +129,7 @@ bool param_getVolumeHight(uint8_t id)
       indi++;
       num = (num * 10) + (key - '0');
     }
-    else if (key == 0xD) {
+    else if (key == CLEAR_CHAR) {
       indi = 0;
       if (num > 0 ) {
         if (id == VOLUME ) {
@@ -158,7 +158,7 @@ bool param_getVolumeHight(uint8_t id)
       lcd.print(num);
       Serial.println(num);
     }
-    else if (key == '*') {
+    else if (key == SKIP_CAHR) {
       return false;
     }
   }

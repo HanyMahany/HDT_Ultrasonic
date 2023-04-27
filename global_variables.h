@@ -25,7 +25,4 @@ double dataToSendSave;
 /*  Object for LCD  */
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, 16, 2);
 
-/*  Object for Entry  */
-PS2Keyboard keyboard;
-
 #endif

@@ -15,4 +15,9 @@
 #define VOLUME  1
 #define HIGHT 2
 
+#define ENTRY_KEYPAD    1
+#define ENTRY_KEYBOARD  2
+
+#define SKIP_CAHR '*'
+#define CLEAR_CHAR '#'
 #endif

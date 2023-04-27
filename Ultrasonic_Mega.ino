@@ -12,9 +12,9 @@ void setup()
   pinMode(TRIG_PIN, OUTPUT); 
   pinMode(ECHO_PIN, INPUT_PULLUP);
   
-  // Keyboard initialization
-  keyboard.begin(KEYBOARD_DATA, KEYBOARD_CLK);
-  
+  //Initialization for Keypad/Keyboard
+  entry_init();
+
   // SD card initialization
   SD_check();
   
@@ -77,7 +77,7 @@ void setup()
             delay(1000);
             break;
           }
-          else if (key == '*' ) {
+          else if (key == SKIP_CAHR ) {
             break;
           }
         }
@@ -102,14 +102,14 @@ void setup()
             param_getVolumeHight(HIGHT);
             continue;
           }
-          else if (key == '*' ) {
+          else if (key == SKIP_CAHR ) {
             break;
           }
         }
         
         continue;
       }
-      else if (key == '*') {
+      else if (key == SKIP_CAHR) {
         //ESC
         activeUser = USER_OPERATION_NAME;
         break;
@@ -139,15 +139,11 @@ void loop() {
   lcd.print(dataToSendSave, 3);
   SD_save();
   nodemcu_send();
+  max485_send();
   delay(1500);
 }
 
-/**************************  Tested  *******************/
-char getChar (void) {
-  if (keyboard.available()) {
-    return  (char)keyboard.read();
-  }
-}
+
 void printParameters (void){
   Serial.println("mode          : "+ String(mode));
   Serial.println("MODE_VOLUME   : "+ String(MODE_VOLUME));
