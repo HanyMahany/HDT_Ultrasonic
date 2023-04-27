@@ -13,14 +13,15 @@ char key ;
 String activeUser ;
 
 /*  variable for system state and parameters */
-uint8_t shape;
-float   shapeSectorArea;
+uint8_t mode;
+float   shapeTotalVolume;
 float   shapeHight;
 
 /*  variable for system calculations */
 double CalculatedVolume;
 double CalculatedHight;
 
+double dataToSendSave;
 /*  Object for LCD  */
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, 16, 2);
 

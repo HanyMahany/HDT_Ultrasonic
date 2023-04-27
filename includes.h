@@ -21,6 +21,9 @@
 #include "nodemcu_interface.h"
 #include "sdcard_interface.h"
 #include "parameters_interface.h"
+#include "max485_interface.h"
+#include "app_level_interface.h"
+
 #include "global_variables.h"
 
 #endif

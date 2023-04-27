@@ -4,6 +4,8 @@ void setup()
 {
   // Serial initialization
   Serial.begin(115200);
+  max485_init();
+  nodemcu_init();
   Serial.println("(Debug)_@setup");
   
   // Initializing Trigger Output and Echo Input
@@ -14,15 +16,8 @@ void setup()
   keyboard.begin(KEYBOARD_DATA, KEYBOARD_CLK);
   
   // SD card initialization
-  checkSD();
+  SD_check();
   
-  #if NODE_MCU_STATUS == ENABLE
-  // NodeMCU Serial initialization
-  Serial3.begin(115200);
-  Serial3.println("AT+RST");
-  Serial.println("AT+RST");
-  #endif
-
   // LCD I2C initialization
   lcd.init();
   lcd.backlight();
@@ -33,70 +28,52 @@ void setup()
   lcd.print("Tech Makers HDTP0122");
   delay(DEALY_WELCOME_MS);
 
-  EEPROM_readAnything(SHAPE_ID , shape );
-  EEPROM_readAnything(SHAPE_SECTOR_AREA  , shapeSectorArea );
-  EEPROM_readAnything(SHAPE_HIGHT        , shapeHight      );
-  
-  if ( (shape == ID_RECTANGLE ) || (shape == ID_CYLINDRICAL) ) {
-    Serial.println("SHAPE_ID : " + String (shape));
-  }
-  else {
-    shape = 0;
-    Serial.println("SHAPE_ID : " + String (shape));
-  }
-  Serial.println("SHAPE_SECTOR_AREA : " + String (shapeSectorArea));
-  Serial.println("SHAPE_HIGHT : " + String (shapeHight) );
+  EEPROM_scanParameters();
 
+  if ( mode == MODE_DISTANCE ) 
+  {
+    Serial.println("MODE : Distance");
+  }
+  else if (mode == MODE_VOLUME)
+  {
+    Serial.println("MODE : Volume");
+    Serial.println("SHAPE_FULL_VOLUME : " + String (shapeTotalVolume));
+    Serial.println("SHAPE_HIGHT : " + String (shapeHight) );
+  }
+  
   t = millis();
-  while (getUser() && (millis() - t <=  WAITING_PASS_TIME)) {
+  while (param_getUser() && (millis() - t <=  WAITING_PASS_TIME)) {
     t = millis();
   }
   if (activeUser.equals(USER_ADMIN_NAME)) {
-
-    /*  Admin
-      1. config. Shape
-        1. Rectangle
-        2. Cylindrical
-      2. Sector Area
-      3. Hight
-    */
+    
     while (1) {
-      lcd.clear();
-      lcd.setCursor(0, 0); lcd.print("1.Shape config.");
-      lcd.setCursor(0, 1); lcd.print("2.Area config.");
-      lcd.setCursor(0, 2); lcd.print("3.Hight config.");
-
+      lcd.setCursor(0, 0); lcd.print("1.System Mode");
+      lcd.setCursor(0, 1); lcd.print("2.System Parameters.");
       delay(1000);
       key = getChar();
       if (key == '1') {
         //Shape Config.
         lcd.clear();
-
-        lcd.setCursor(0, 0); lcd.print("Shape: ");
-        if ((shape == ID_RECTANGLE)) {
-          lcd.print("Rectangle");
-        }
-        else if ((shape == ID_CYLINDRICAL)) {
-          lcd.print("Cylindrical");
-        }
-        lcd.setCursor(0, 1); lcd.print("1.Rectangle");
-        lcd.setCursor(0, 2); lcd.print("2.Cylindrical");
         while (1) {
+          lcd.setCursor(0, 0); lcd.print("1.DISTANCE");
+          lcd.setCursor(0, 1); lcd.print("2.VOLUME");
           key = getChar();
           if (key == '1' ) {
-            //while (getServerDNS(MAIN));
-            shape = ID_RECTANGLE;
-            EEPROM_writeAnything(SHAPE_ID, shape );
-            Serial.println("Rectangle is Chosen");
-            lcd.setCursor(0, 3); lcd.print("New: Rectangle");
+            mode = MODE_DISTANCE;
+            EEPROM_writeAnything(MODE, mode );
+            Serial.println("DISTANCE is Chosen");
+            lcd.clear();
+            lcd.setCursor(0, 1); lcd.print("Mode: DISTANCE");
             delay(1000);
             break;
           }
           else if (key == '2' ) {
-            shape = ID_CYLINDRICAL   ;
-            EEPROM_writeAnything(SHAPE_ID, shape );
-            Serial.println("cylindrical is Chosen");
-            lcd.setCursor(0, 3); lcd.print("New: cylindrical");
+            mode = MODE_VOLUME;
+            EEPROM_writeAnything(MODE, mode );
+            Serial.println("VOLUME is Chosen");
+            lcd.clear();
+            lcd.setCursor(0, 1); lcd.print("Mode: VOLUME");
             delay(1000);
             break;
           }
@@ -107,15 +84,29 @@ void setup()
         continue;
       }
       else if (key == '2') {
-        //Sector area
+        //Parameters
         lcd.clear();
-        getSectorAreaHight(AREA );
-        continue;
-      }
-      else if (key == '3') {
-        //Hight
-        lcd.clear();
-        getSectorAreaHight(HIGHT);
+        while (1) {
+          lcd.setCursor(0, 0); lcd.print("1.Total Volume");
+          lcd.setCursor(0, 1); lcd.print("2.Total Height");
+          key = getChar();
+          if (key == '1' ) 
+          {
+            lcd.clear();
+            param_getVolumeHight(VOLUME);
+            continue;
+          }
+          else if (key == '2' ) 
+          {
+            lcd.clear();
+            param_getVolumeHight(HIGHT);
+            continue;
+          }
+          else if (key == '*' ) {
+            break;
+          }
+        }
+        
         continue;
       }
       else if (key == '*') {
@@ -125,12 +116,29 @@ void setup()
       }
     }
   }
+  EEPROM_scanParameters();
+  printParameters();
+  lcd.clear();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  getDistanceCM();
-  send2NodeData();
+  lcd.setCursor(0, 1);
+  if ((mode == MODE_DISTANCE))
+  {
+    app_level_getDistanceCM();  
+    dataToSendSave = CalculatedHight;
+    lcd.print("Height: ");
+  }
+  
+  else if ((mode  == MODE_VOLUME))
+  {
+    app_level_Volume(); 
+    dataToSendSave = CalculatedVolume;
+    lcd.print("Volume: ");
+  }
+  lcd.print(dataToSendSave, 3);
+  SD_save();
+  nodemcu_send();
   delay(1500);
 }
 
@@ -139,6 +147,16 @@ char getChar (void) {
   if (keyboard.available()) {
     return  (char)keyboard.read();
   }
+}
+void printParameters (void){
+  Serial.println("mode          : "+ String(mode));
+  Serial.println("MODE_VOLUME   : "+ String(MODE_VOLUME));
+  Serial.println("MODE_DISTANCE : "+ String(MODE_DISTANCE));
+  Serial.println("VOLUME  : "+ String(VOLUME));
+  Serial.println("HIGHT   : "+ String(HIGHT));
+  Serial.println("MODE             : "+ String(MODE             ));
+  Serial.println("SHAPE_FULL_VOLUME: "+ String(SHAPE_FULL_VOLUME));
+  Serial.println("SHAPE_HIGHT      : "+ String(SHAPE_HIGHT      ));  
 }
 
 

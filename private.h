@@ -5,14 +5,14 @@
 #define ENABLE 1
 #define DISABLE 0
 
-#define ID_RECTANGLE     1
-#define ID_CYLINDRICAL   2
+#define MODE_DISTANCE 1
+#define MODE_VOLUME   2
 
-#define SHAPE_ID          200
-#define SHAPE_SECTOR_AREA 204
+#define MODE              200
+#define SHAPE_FULL_VOLUME 204
 #define SHAPE_HIGHT       208
 
-#define AREA  1
+#define VOLUME  1
 #define HIGHT 2
 
 #endif

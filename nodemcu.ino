@@ -1,10 +1,21 @@
 #include "nodemcu_interface.h"
 
-void send2NodeData(void) {
+void nodemcu_init(void)
+{
+  #if NODE_MCU_STATUS == ENABLE
+  // NodeMCU Serial initialization
+  Serial3.begin(115200);
+  Serial3.println("AT+RST");
+  Serial.println("AT+RST");
+  #endif
+}
+
+void nodemcu_send(void) 
+{
   #if NODE_MCU_STATUS == 1
   t = millis();
   Serial.println("(Debug)_@send2Node");
-  String message  = "D " + String(CHANNEL) + String(" ") + String (CalculatedVolume);
+  String message  = "D " + String(CHANNEL) + String(" ") + String (dataToSendSave);
   // UDP connection
   String cmd = "AT+CIPMUX=1";
   Serial3.println(cmd);

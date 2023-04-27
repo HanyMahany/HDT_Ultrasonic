@@ -1,8 +1,7 @@
 #ifndef PARAMETERS_INTERFACE_H_
 #define PARAMETERS_INTERFACE_H_
 
-bool getUser (void);
-bool getSectorAreaHight(uint8_t id);
-void getDistanceCM(void);
+bool param_getUser (void);
+bool param_getVolumeHight(uint8_t id);
 
 #endif

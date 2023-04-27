@@ -20,3 +20,21 @@ template <class T> int EEPROM_readAnything(int ee, T& value)
     *p++ = EEPROM.read(ee++);
   return i;
 }
+
+void EEPROM_scanParameters (void)
+{
+  EEPROM_readAnything(MODE , mode );
+  EEPROM_readAnything(SHAPE_FULL_VOLUME  , shapeTotalVolume );
+  EEPROM_readAnything(SHAPE_HIGHT        , shapeHight      );
+  Serial.println("MODE: " + String((mode==MODE_VOLUME)? ("VOLUME"): ("DISTANCE")));
+  Serial.println("SHAPE_FULL_VOLUME: "+String(shapeTotalVolume, 3));
+  Serial.println("SHAPE_HIGHT: "+ String(shapeHight ,3));
+}
+
+void EEPROM_resetParameters (void)
+{
+  uint32_t clear = 0;
+  EEPROM_writeAnything(MODE , clear );
+  EEPROM_writeAnything(SHAPE_FULL_VOLUME  , clear );
+  EEPROM_writeAnything(SHAPE_HIGHT        , clear );
+}
